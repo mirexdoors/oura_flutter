@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-
-import 'screens/auth.dart';
+import 'screens/start.dart';
 
 void main() => runApp(HealthboardApp());
 
@@ -9,12 +8,12 @@ class HealthboardApp extends StatelessWidget {
   Widget build(BuildContext context) {
 
     return MaterialApp(
-      title: 'Max Fitness',
+      title: 'Healthboard App',
       theme: ThemeData(
-        primaryColor: Color.fromRGBO(50, 65, 85, 1),
-        textTheme: TextTheme(headline6: TextStyle(color: Colors.white)),
+        primaryColor: Color.fromRGBO(238, 238, 238, 1),
+        textTheme: TextTheme(headline6: TextStyle(color: Color.fromRGBO(53, 104, 89,1))),
       ),
-      home: AuthorizationPage(),
+      home: StartScreen(),
     );
   }
 }
