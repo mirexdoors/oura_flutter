@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_web_auth/flutter_web_auth.dart';
+import 'dart:convert' show jsonDecode;
+import 'package:http/http.dart' as http;
 
 class AuthInfoParameteres {
   String clientId;
@@ -9,12 +12,7 @@ class AuthInfoParameteres {
   String scope;
   String redirectUri;
 
-  AuthInfoParameteres(
-      {this.clientId,
-      this.state,
-      this.responseType,
-      this.scope,
-      this.redirectUri});
+  AuthInfoParameteres({this.clientId, this.state, this.responseType, this.scope, this.redirectUri});
 }
 
 class StartScreen extends StatelessWidget {
@@ -25,9 +23,7 @@ class StartScreen extends StatelessWidget {
           backgroundColor: Theme.of(context).primaryColor,
           appBar: AppBar(
             title: Text('Health Board App',
-                style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    color: Theme.of(context).textTheme.headline6.color)),
+                style: TextStyle(fontWeight: FontWeight.bold, color: Theme.of(context).textTheme.headline6.color)),
             leading: Icon(CupertinoIcons.heart),
           ),
           body: Column(children: <Widget>[
@@ -47,21 +43,18 @@ class OauthBlock extends StatelessWidget {
         responseType: 'token',
         scope: 'email daily',
       );
-      String url =
-          'https://cloud.ouraring.com/oauth/authorize?client_id=${authInfoParameteres.clientId}&redirect_uri=com.example.oura_flutter:/&state=${authInfoParameteres.state}&response_type=${authInfoParameteres.responseType}&scope=${authInfoParameteres.scope}';
-      final result =
-          await FlutterWebAuth.authenticate(url: url, callbackUrlScheme: 'com.example.oura_flutter');
+      final callbackScheme = 'com.health.oura_flutter';
+      final url = Uri.https('cloud.ouraring.com', '/oauth/authorize', {
+        'response_type': authInfoParameteres.responseType,
+        'client_id': authInfoParameteres.clientId,
+        'redirect_uri': '$callbackScheme:/',
+        'scope': authInfoParameteres.scope,
+        'state': authInfoParameteres.state
+      });
+      final result = await FlutterWebAuth.authenticate(url: url.toString(), callbackUrlScheme: callbackScheme);
 
-      print(result);
-      if (result != null ) {
-        final token = Uri.parse(result);
-        print('token');
-        print(token);
-      } else {
-        print('token');
-        print('error');
-      }
-
+// Use this code to get an access toke
+      print(Uri.parse(result));
     }
 
     return Container(
@@ -75,9 +68,7 @@ class OauthBlock extends StatelessWidget {
               child: Text(
                 'Health Board',
                 style: TextStyle(
-                    fontSize: 40,
-                    fontWeight: FontWeight.bold,
-                    color: Theme.of(context).textTheme.headline6.color),
+                    fontSize: 40, fontWeight: FontWeight.bold, color: Theme.of(context).textTheme.headline6.color),
               ),
             )),
           ),
